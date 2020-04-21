@@ -1,9 +1,8 @@
 package ma.eshop.usersapi.models;
 
- import javax.persistence.Entity;
- import javax.persistence.Id;
- import javax.persistence.OneToOne;
+ import javax.persistence.*;
  import javax.validation.constraints.Email;
+
 @Entity
 public class User {
 
@@ -14,19 +13,37 @@ public class User {
 
     private String lastName;
 
+    private String password;
+
     @OneToOne
     private Address address;
 
     @Email
     private String email;
 
+    private boolean accountNonLocked;
+
+     private Role role;
+
     protected User(){
     }
 
-    public User(String firstName, String lastName, String email){
+    public User(User user) {
+        this.password=user.getPassword();
+        this.email=user.getEmail();
+        this.lastName=user.getLastName();
+        this.firstName=user.getFirstName();
+        this.accountNonLocked=user.isAccountNonLocked();
+        this.role=user.getRole();
+        this.id=user.getId();
+    }
+
+    public User(String firstName, String lastName, String email, String password){
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;
+        this.password=password;
+        this.role=Role.USER;
     }
 
     public void setAddress(Address address) {
@@ -58,6 +75,34 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
+    }
+
+    protected boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
