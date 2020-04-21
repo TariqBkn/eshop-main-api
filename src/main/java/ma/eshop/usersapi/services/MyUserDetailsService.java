@@ -1,5 +1,6 @@
 package ma.eshop.usersapi.services;
 
+import ma.eshop.usersapi.models.MyUserDetails;
 import ma.eshop.usersapi.models.User;
 import ma.eshop.usersapi.repositories.UsersRepository;
 import org.elasticsearch.common.inject.Inject;
@@ -7,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.HashSet;
 import java.util.Optional;
 
 public class MyUserDetailsService implements UserDetailsService {
