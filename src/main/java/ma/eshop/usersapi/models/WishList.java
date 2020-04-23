@@ -1,9 +1,6 @@
 package ma.eshop.usersapi.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.Optional;
 @Entity
 public class WishList {
     @Id
+    @GeneratedValue
     private int id;
     @OneToOne
     private User user;
