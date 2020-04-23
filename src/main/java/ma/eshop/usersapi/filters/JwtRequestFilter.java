@@ -1,24 +1,21 @@
 package ma.eshop.usersapi.filters;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import ma.eshop.usersapi.services.JwtService;
+import ma.eshop.usersapi.services.JwtUtilService;
 import ma.eshop.usersapi.services.MyUserDetailsService;
-import org.elasticsearch.common.inject.Inject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+ import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+ import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.inject.Inject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.SignatureException;
-@Component
+
 public class JwtRequestFilter extends OncePerRequestFilter {
     private static final String JWT_NOT_STARTING_WITH_BEARER = "JWT Token does not begin with Bearer String";
     private static final String CANT_AUTHENTICATE = "Can't authenticate!";
@@ -30,7 +27,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Inject
     private MyUserDetailsService myUserDetailsService;
     @Inject
-    private JwtService jwtService;
+    private JwtUtilService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
