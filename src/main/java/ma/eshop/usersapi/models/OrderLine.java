@@ -1,15 +1,17 @@
 package ma.eshop.usersapi.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
- import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class OrderLine {
     @Id
+    @GeneratedValue
     private int id;
     @OneToOne
     private Product product;
+    @ManyToOne
+    private Product order;
+
     private int quantity;
     private float cost;
 
@@ -38,4 +40,11 @@ public class OrderLine {
         cost=product.getUnitPrice()*quantity;
     }
 
+    public Product getOrder() {
+        return order;
+    }
+
+    public void setOrder(Product order) {
+        this.order = order;
+    }
 }
