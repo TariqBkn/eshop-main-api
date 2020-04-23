@@ -1,8 +1,9 @@
 package ma.eshop.usersapi.config;
 
 import ma.eshop.usersapi.filters.EntryEntryPoint;
-import org.elasticsearch.common.inject.Inject;
-import org.springframework.context.annotation.Bean;
+import ma.eshop.usersapi.filters.JwtRequestFilter;
+ import ma.eshop.usersapi.services.MyUserDetailsService;
+ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,12 +14,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.Filter;
+import javax.inject.Inject;
 
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Inject
-    private Filter jwtRequestFilter;
+    private MyUserDetailsService myUserDetailsService;
+    @Inject
+    private JwtRequestFilter jwtRequestFilter;
     @Inject
     private EntryEntryPoint jwtAuthenticationEntryPoint;
 
@@ -36,12 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                  return rawPassword.toString();
             }
         };
-    }
-
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .inMemoryAuthentication()
-                .withUser("foo").password("bar").roles("");
     }
 
     @Override
@@ -69,4 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(myUserDetailsService);
+    }
 }
