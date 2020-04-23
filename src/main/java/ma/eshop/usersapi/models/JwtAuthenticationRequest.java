@@ -4,21 +4,19 @@ import java.io.Serializable;
 
 public class JwtAuthenticationRequest implements Serializable{
     private static final long serialVersionUID = 5926468583005150707L;
-    private String login;
+    private String username;
     private String password;
     //need default constructor for JSON Parsing
-    public JwtAuthenticationRequest()
-    {
-    }
+
     public JwtAuthenticationRequest(String username, String password) {
-        this.setLogin(username);
+        this.setUsername(username);
         this.setPassword(password);
     }
-    public String getLogin() {
-        return this.login;
+    public String getUsername() {
+        return this.username;
     }
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
     public String getPassword() {
         return this.password;
