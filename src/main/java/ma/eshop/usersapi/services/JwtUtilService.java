@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class JwtService {
+public class JwtUtilService {
     public static final long JWT_TOKEN_VALIDITY = 2 * 60 * 60l;
 
     @Value("${jwt.secretKey:default-jwt-code-azdTfe-56868}")

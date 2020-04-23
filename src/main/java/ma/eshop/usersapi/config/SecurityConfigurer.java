@@ -1,5 +1,7 @@
 package ma.eshop.usersapi.config;
 
+import ma.eshop.usersapi.filters.EntryEntryPoint;
+import org.elasticsearch.common.inject.Inject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +17,10 @@ import javax.servlet.Filter;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//    @Autowired
-    Filter jwtRequestFilter;
+    @Inject
+    private Filter jwtRequestFilter;
+    @Inject
+    private EntryEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,12 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-
-//    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 .inMemoryAuthentication()
-                .withUser("foo").password("bar").roles("USER");
+                .withUser("foo").password("bar").roles("");
     }
 
     @Override
@@ -49,11 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrf().disable()
                     .authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
-                    .antMatchers("/login","/users/signOn").permitAll()
+                    .antMatchers("/users/login","/users/signOn").permitAll()
                     .antMatchers("**/admin**").hasRole("ADMIN")
                     .anyRequest().authenticated()
-                    .and()
-                    .sessionManagement()
+                    .and() .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);// Sessions will not be created
         // now we have to use the the jwtRequestFilter before UsernamePasswordAuthenticationFilter that processes authentication form submission
         httpSecurity
@@ -65,4 +67,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
 }
