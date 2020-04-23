@@ -2,21 +2,11 @@ package ma.eshop.usersapi.config;
 
 
 import ma.eshop.usersapi.filters.CorsFilter;
-import ma.eshop.usersapi.services.*;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.springframework.beans.factory.annotation.Value;
+import ma.eshop.usersapi.filters.EntryEntryPoint;
+import ma.eshop.usersapi.filters.JwtRequestFilter;
+ import ma.eshop.usersapi.services.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 @Configuration
 //@EnableElasticsearchRepositories(basePackages = "ma.eshop.usersapi.repositories")
@@ -41,43 +31,23 @@ public class Config {
 //    }
 
     @Bean
-    JwtService jwtService(){
-        return new JwtService();
-    }
-
-    @Bean
-    MyUserDetailsService myUserDetailsService(){
-        return new MyUserDetailsService();
-    }
-
-    @Bean
-    OrdersService ordersService(){
-        return new OrdersService();
-    }
-
-    @Bean
-    WishListsService wishListsService(){
-        return new WishListsService();
-    }
-
-    @Bean
-    UsersService usersService(){
-        return new UsersService();
-    }
-
-    @Bean
-    ProductsService productsService(){
-        return new ProductsService();
-    }
-
-    @Bean
-    CartsService cartsService(){
-        return new CartsService();
+    JwtUtilService jwtUtilService(){
+        return new JwtUtilService();
     }
 
     @Bean
     CorsFilter corsFilter(){
         return new CorsFilter();
+    }
+
+    @Bean
+    JwtRequestFilter jwtRequestFilter(){
+        return new JwtRequestFilter();
+    }
+
+    @Bean
+    EntryEntryPoint entryEntryPoint(){
+        return new EntryEntryPoint();
     }
 
 }
