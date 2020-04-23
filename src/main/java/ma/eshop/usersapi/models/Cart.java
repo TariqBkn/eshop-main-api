@@ -1,6 +1,7 @@
 package ma.eshop.usersapi.models;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.List;
 @Entity
 public class Cart {
     @Id
+    @GeneratedValue
     private int id;
     @OneToMany
     private List<OrderLine> orderLines;
