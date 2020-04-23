@@ -1,5 +1,7 @@
 package ma.eshop.usersapi.models;
 
+ import org.hibernate.annotations.Cascade;
+
  import javax.persistence.*;
  import javax.validation.constraints.Email;
 
@@ -7,6 +9,7 @@ package ma.eshop.usersapi.models;
 public class User {
 
     @Id
+    @GeneratedValue
     private int id;
 
     private String firstName;
@@ -15,7 +18,7 @@ public class User {
 
     private String password;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     @Email
