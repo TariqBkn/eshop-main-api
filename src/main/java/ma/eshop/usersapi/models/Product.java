@@ -15,6 +15,7 @@ public class Product {
     private String name;
     private String description;
     private float unitPrice;
+    private String colors;
     @OneToMany
     private List<Image> images;
     private  String providerName;
@@ -80,4 +81,12 @@ public class Product {
     }
 
     public int getId(){return id;}
+
+    public String getColors() {
+        return colors;
+    }
+
+    public void setColors(String colors) {
+        this.colors = colors;
+    }
 }
