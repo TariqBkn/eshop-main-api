@@ -13,14 +13,16 @@ public class Address {
     private String streetName;
     private String number;
 
-    public Address(String city, String streetName, String number){
-        this.city=city;
-        this.streetName=streetName;
-        this.number=number;
-    }
-
     public Address(){
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getNumber() {
+        return number;
     }
 
     public String getCity() {
@@ -34,15 +36,17 @@ public class Address {
     public void setCity(String city) {
         this.city = city;
     }
+
     public void setStreetName(String streetName) {
         this.streetName = streetName;
     }
+
     public void setNumber(String number) {
         this.number = number;
     }
 
-    public String getNumber() {
-        return number;
+    public void setId(int id) {
+        this.id = id;
     }
 
  }
