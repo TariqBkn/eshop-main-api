@@ -1,5 +1,6 @@
 package ma.eshop.usersapi.models;
 
+ import com.fasterxml.jackson.annotation.JsonIgnore;
  import org.hibernate.annotations.Cascade;
 
  import javax.persistence.*;
@@ -18,13 +19,14 @@ public class User {
 
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn
     private Address address;
 
     @Email
     private String email;
 
-    private boolean accountNonLocked;
+    private boolean accountNonLocked=true;
 
      private Role role;
 
@@ -107,5 +109,27 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void setAddressCity(String city){
+        address.setCity(city);
+    }
+    public void setAddressNumber(String number){
+        address.setNumber(number);
+    }
+    public void setAdressStreetName(String streetName){
+        address.setStreetName(streetName);
+    }
+    @JsonIgnore
+    public String getAddressCity() {
+        return address.getCity();
+    }
+    @JsonIgnore
+    public String getAddressNumber() {
+        return address.getNumber();
+    }
+    @JsonIgnore
+    public String getAddressStreetName() {
+        return address.getStreetName();
     }
 }
