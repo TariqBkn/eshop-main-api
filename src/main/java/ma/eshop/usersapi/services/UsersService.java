@@ -20,4 +20,30 @@ public class UsersService {
         System.out.println("username"+user.getEmail());
          usersRepository.save(user);
     }
+
+    public boolean existsByEmail(String email) {
+        return usersRepository.existsByEmail(email);
+    }
+
+    public User findById(int id) {
+        return usersRepository.findById(id).get();
+    }
+
+    public void update(User user) {
+        Optional<User> existingUser = usersRepository.findById(user.getId());
+        if(existingUser.isPresent()){
+            User foundExistingUser = existingUser.get();
+
+            foundExistingUser.setAddressCity(user.getAddressCity());
+            foundExistingUser.setAddressNumber(user.getAddressNumber());
+            foundExistingUser.setAdressStreetName(user.getAddressStreetName());
+            foundExistingUser.setFirstName(user.getFirstName());
+            foundExistingUser.setLastName(user.getLastName());
+            foundExistingUser.setPassword(user.getPassword());
+
+
+            usersRepository.save(foundExistingUser);
+        }
+
+    }
 }
