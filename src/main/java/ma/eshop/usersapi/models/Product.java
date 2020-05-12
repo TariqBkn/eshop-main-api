@@ -1,10 +1,6 @@
 package ma.eshop.usersapi.models;
 
-import javax.annotation.processing.Generated;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -12,14 +8,16 @@ public class Product {
     @Id
     @GeneratedValue
     private int id;
-    private String name;
+    private String title;
     private String description;
     private float unitPrice;
-    private String colors;
-    @OneToMany
+    private String color;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product")
     private List<Image> images;
     private  String providerName;
     private float note;
+    private int quantityInStock;
+    private float promotionRatio=0;
 
     protected Product(){
 
@@ -33,7 +31,7 @@ public class Product {
        private Product product;
 
        public Builder(String name, float unitPrice, Image image){
-           product.name=name;
+           product.title =name;
            product.images.add(image);
            product.unitPrice=unitPrice;
        }
@@ -56,8 +54,8 @@ public class Product {
         this.note=note;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public String getDescription() {
@@ -82,11 +80,28 @@ public class Product {
 
     public int getId(){return id;}
 
-    public String getColors() {
-        return colors;
+    public String getColor() {
+        return color;
     }
 
-    public void setColors(String colors) {
-        this.colors = colors;
+    public void setColor(String colors) {
+        this.color = color;
+    }
+
+    public int getQuantityInStock(){
+        return quantityInStock;
+    }
+
+    public void setQuantityInStock(int quantityInStock) {
+        this.quantityInStock = quantityInStock;
+    }
+
+    public float getPromotionRatio() {
+        return promotionRatio;
+    }
+
+    public void setPromotionRatio(float promotionRation) {
+        if(promotionRation>1 || promotionRation<0) { throw new IllegalArgumentException("Ratio must be between 0 and 1 included."); }
+        this.promotionRatio = promotionRation;
     }
 }
