@@ -1,9 +1,6 @@
 package ma.eshop.usersapi.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +9,7 @@ public class Cart {
     @Id
     @GeneratedValue
     private int id;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<OrderLine> orderLines;
     private Date creationDate;
 
