@@ -12,10 +12,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 @RestController
@@ -62,9 +64,22 @@ public class UsersController {
         }
     }
 
-    @PostMapping("/signOn")
-    public void signOn(@RequestBody User user ){
+    @PostMapping("/signup")
+    public ResponseEntity signOn(@RequestBody User user ) throws URISyntaxException {
+        if(usersService.existsByEmail(user.getEmail())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("email_linked_to_an_other_account");
+        }
         usersService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body("created");
+    }
+    @GetMapping("/me")
+    User getConnectedUser(@AuthenticationPrincipal User connectedUser){
+        return usersService.findById(connectedUser.getId());
+    }
+
+    @PatchMapping("/me")
+    void updateUserData(@RequestBody User user){
+        usersService.update(user);
     }
 
     @GetMapping("/{email}")
