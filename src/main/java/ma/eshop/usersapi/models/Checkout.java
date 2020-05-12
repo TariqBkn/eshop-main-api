@@ -1,16 +1,13 @@
 package ma.eshop.usersapi.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 @Entity
 public class Checkout {
     @Id
     @GeneratedValue
     private int id;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<OrderLine> orderLines;
     private float totalPrice;
     public Checkout(){
