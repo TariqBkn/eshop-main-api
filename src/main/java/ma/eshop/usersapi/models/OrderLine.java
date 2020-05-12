@@ -1,19 +1,24 @@
 package ma.eshop.usersapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import ma.eshop.usersapi.errorHandlers.QuantityInStockExceededException;
+
 import javax.persistence.*;
 
 @Entity
 public class OrderLine {
     @Id
     @GeneratedValue
-    private int id;
-    @OneToOne
-    private Product product;
-    @ManyToOne
-    private Product order;
+        private int id;
+        @ManyToOne
+        private Product product;
+        @ManyToOne
+        private Order order;
 
-    private int quantity;
-    private float cost;
+        private int quantity;
+        private float cost;
 
     protected OrderLine(){
 
@@ -24,7 +29,9 @@ public class OrderLine {
         this.quantity=quantity;
         updateCost();
     }
-
+    public int getQuantity(){
+        return quantity;
+    }
     public void setQuantity(int quantity) {
         this.quantity = quantity;
         updateCost();
@@ -37,14 +44,45 @@ public class OrderLine {
         return cost;
     }
     private void updateCost() {
-        cost=product.getUnitPrice()*quantity;
+        cost=quantity*(product.getUnitPrice()*(1-product.getPromotionRatio()));
     }
 
-    public Product getOrder() {
+    public Order getOrder() {
         return order;
     }
 
-    public void setOrder(Product order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id=id;
+    }
+
+    public int getProductId(){
+        return product.getId();
+    }
+
+    public int getOrderId() {
+        return order.getId();
+    }
+
+    public OrderLine addQuantity(int quantity) throws QuantityInStockExceededException {
+        int newQuantity = this.quantity + quantity;
+        if(newQuantity<=product.getQuantityInStock()) {this.quantity += quantity;}
+        else{
+            throw new QuantityInStockExceededException("Can't exceed quantity in stock.");
+        }
+        updateCost();
+        return this;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
 }
+
