@@ -2,12 +2,10 @@ package ma.eshop.usersapi.config;
 
 
 
-import ma.eshop.usersapi.batch.products.JobCompletionListener;
 import ma.eshop.usersapi.batch.products.ProductItemProcessor;
 import ma.eshop.usersapi.batch.products.ProductItemWriter;
 import ma.eshop.usersapi.models.Product;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -57,22 +55,17 @@ public class BatchConfig {
     }
 
     @Bean
-    public JobExecutionListener listener() {
-        return new JobCompletionListener();
-    }
-
-    @Bean
-    BeanValidatingItemProcessor<Product> beanValidatingItemProcessor() throws Exception{
+    BeanValidatingItemProcessor<Product> beanValidatingItemProcessor() {
         BeanValidatingItemProcessor<Product> beanValidatingItemProcessor = new BeanValidatingItemProcessor<>();
         beanValidatingItemProcessor.setFilter(true);
         return beanValidatingItemProcessor;
     }
     @Bean
-    public FlatFileItemReader<Product> flatFileItemReader(@Value("${productsInputFile}") Resource productsInputFile){
+    public FlatFileItemReader<Product> flatFileItemReader(@Value("${productsBatchInputFile}") Resource productsBatchInputFile){
         FlatFileItemReader<Product> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setName("CSV-READER");
         flatFileItemReader.setLinesToSkip(1);
-        flatFileItemReader.setResource(productsInputFile);
+        flatFileItemReader.setResource(productsBatchInputFile);
         flatFileItemReader.setLineMapper(lineMapper());
         return flatFileItemReader;
     }
