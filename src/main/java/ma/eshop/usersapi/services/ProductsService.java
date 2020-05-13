@@ -49,14 +49,14 @@ public class ProductsService {
         productRepository.saveAll(products);
     }
 
-    public BatchStatus loadProductsFromFlatFileIntoDataBase() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+    public BatchStatus loadProductsFromCsvFileIntoDataBase() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
         Map<String, JobParameter> jobParameterMap = new HashMap<>();
         jobParameterMap.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(jobParameterMap);
         JobExecution jobExecution = jobLauncher.run(job, jobParameters);
 
         if(jobExecution.isRunning()) {
-            logger.debug("::::::> PRODUCTS BATCH RUNNING");
+            logger.debug("NEW PRODUCTS BATCH RUNNING");
         }
         return jobExecution.getStatus();
     }
