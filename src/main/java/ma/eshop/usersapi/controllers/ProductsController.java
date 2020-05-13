@@ -4,6 +4,7 @@ import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.models.SimilarProduct;
 import ma.eshop.usersapi.services.ProductsService;
 import ma.eshop.usersapi.services.SimilarProductsService;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -49,8 +50,8 @@ public class ProductsController {
     }
 
     @GetMapping(value = "/bulk-add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity bulkAddProducts() throws Exception{ //@RequestBody File productsFlatFile
-        return productsService.loadProductsFromFlatFileIntoDataBase();
+    public ResponseEntity<BatchStatus> bulkAddProducts() throws Exception{ //@RequestBody File productsFlatFile
+        return ResponseEntity.ok(productsService.loadProductsFromFlatFileIntoDataBase());
     }
 
 
