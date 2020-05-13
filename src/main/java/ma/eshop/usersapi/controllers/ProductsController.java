@@ -4,6 +4,7 @@ import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.models.SimilarProduct;
 import ma.eshop.usersapi.services.ProductsService;
 import ma.eshop.usersapi.services.SimilarProductsService;
+import ma.eshop.usersapi.services.UploadsService;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
@@ -24,6 +26,9 @@ public class ProductsController {
 
     @Inject
     private SimilarProductsService similarProductsService;
+
+    @Inject
+    private UploadsService uploadsService;
 
 
     @RequestMapping("/{productId}")
@@ -49,9 +54,10 @@ public class ProductsController {
         return productsService.findAllProducts(PageRequest.of(page, 30));
     }
 
-    @GetMapping(value = "/bulk-add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BatchStatus> bulkAddProducts() throws Exception{ //@RequestBody File productsFlatFile
-        return ResponseEntity.ok(productsService.loadProductsFromFlatFileIntoDataBase());
+    @PostMapping(value = "/bulk-add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BatchStatus> bulkAddProducts(@RequestParam("file") MultipartFile productsFile) throws Exception{
+        uploadsService.uploadCsvFile(productsFile);
+        return ResponseEntity.ok(productsService.loadProductsFromCsvFileIntoDataBase());
     }
 
 
