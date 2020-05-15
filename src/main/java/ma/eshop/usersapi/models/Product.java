@@ -2,6 +2,7 @@ package ma.eshop.usersapi.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,11 +23,15 @@ public class Product {
     private float note=-1;
     private int quantityInStock=0;
     private float promotionRatio=0;
-
+    @Transient
+    private static final int MAX_NUMBER_OF_IMAGES=3;
     public Product(){
-
+        if(images==null) images= new ArrayList<>();
     }
 
+    public boolean canNotAddImages() {
+        return images.size()>=MAX_NUMBER_OF_IMAGES;
+    }
 
 
     public static class Builder {
@@ -136,5 +141,9 @@ public class Product {
 
     public float getPromotionRatio() {
         return promotionRatio;
+    }
+
+    public void addImage(Image image){
+        images.add(image);
     }
 }
