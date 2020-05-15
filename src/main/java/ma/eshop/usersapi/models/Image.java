@@ -11,20 +11,24 @@ import javax.persistence.ManyToOne;
 public class Image {
     @Id
     @GeneratedValue
-    private String id;
+    private int id;
     private String name;
     @JsonIgnore
     @ManyToOne
     private Product product;
-    protected Image(){
+    public Image(){
 
     }
+    public Image(Product product, String name){
+        this.name=name;
+        this.product=product;
+    }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
