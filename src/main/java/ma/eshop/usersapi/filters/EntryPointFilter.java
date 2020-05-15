@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class EntryEntryPoint implements AuthenticationEntryPoint {
+public class EntryPointFilter implements AuthenticationEntryPoint {
 
     private static final long serialVersionUID = -7858869558953243875L;
 

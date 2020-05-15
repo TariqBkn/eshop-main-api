@@ -2,7 +2,7 @@ package ma.eshop.usersapi.config;
 
 
 import ma.eshop.usersapi.filters.CorsFilter;
-import ma.eshop.usersapi.filters.EntryEntryPoint;
+import ma.eshop.usersapi.filters.EntryPointFilter;
 import ma.eshop.usersapi.filters.JwtRequestFilter;
  import ma.eshop.usersapi.services.*;
 import org.springframework.context.annotation.Bean;
@@ -48,8 +48,8 @@ public class Config {
     }
 
     @Bean
-    EntryEntryPoint entryEntryPoint(){
-        return new EntryEntryPoint();
+    EntryPointFilter entryEntryPoint(){
+        return new EntryPointFilter();
     }
 
     @Bean
