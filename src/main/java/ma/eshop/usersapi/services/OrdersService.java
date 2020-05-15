@@ -3,6 +3,7 @@ package ma.eshop.usersapi.services;
 import ma.eshop.usersapi.errorHandlers.QuantityInStockExceededException;
 import ma.eshop.usersapi.models.Order;
 import ma.eshop.usersapi.models.OrderLine;
+import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.models.User;
 import ma.eshop.usersapi.repositories.OrdersRepository;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,8 @@ public class OrdersService {
     private OrdersRepository ordersRepository;
     @Inject
     private OrderLinesService orderLinesService;
+    @Inject
+    private ProductsService productsService;
 
     public Order getUndoneOrderOfUser(int userId) {
         return ordersRepository.getUndoneOrderOfUser(userId);
@@ -53,7 +56,6 @@ public class OrdersService {
     }
 
     public boolean userHasNoUndoneOrders(int userId){
-        System.out.println(" /****************************///////////////  user "+userId+" has no undone order : "+ordersRepository.userHasNoUndoneOrders(userId));
         return ordersRepository.userHasNoUndoneOrders(userId);
     }
     private void keepOnlyOneUndoneOrder(User currentUser) {
@@ -92,6 +94,23 @@ public class OrdersService {
     @Transactional
     public void checkoutOrder(int orderId) {
         ordersRepository.checkoutOrder(orderId);
+        updateQuantityInStockOfProductsInCheckoutOrder(orderId);
+    }
+
+    private void updateQuantityInStockOfProductsInCheckoutOrder(int orderId) {
+        List<OrderLine> orderLinesOfCheckoutOrder = orderLinesService.findOrderLinesByOrderId(orderId);
+        orderLinesOfCheckoutOrder.stream().forEach(
+                orderLine -> {
+                    updateQuantityInStockOfProductInOrderLine(orderLine);
+                }
+        );
+    }
+
+    private void updateQuantityInStockOfProductInOrderLine(OrderLine orderLine) {
+        Product productInCurrentOrderLine = orderLine.getProduct();
+        int newQuantityInStockValue = productInCurrentOrderLine.getQuantityInStock() - orderLine.getQuantity();
+        productInCurrentOrderLine.setQuantityInStock(newQuantityInStockValue);
+        productsService.save(productInCurrentOrderLine);
     }
 
     public Optional<Order> findOrderById(int orderId) {
