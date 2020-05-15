@@ -1,6 +1,6 @@
 package ma.eshop.usersapi.services;
 
-import ma.eshop.usersapi.errorHandlers.ProductHasAtLeastMaxNumberOfImages;
+import ma.eshop.usersapi.errorHandlers.ProductHasAtLeastMaxNumberOfImagesException;
 import ma.eshop.usersapi.models.Image;
 import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.repositories.ProductRepository;
@@ -75,11 +75,11 @@ public class ProductsService {
         productRepository.save(product);
     }
 
-    public ResponseEntity AddImageToProductWithId(@RequestParam("image") MultipartFile MultiPartImage, @PathVariable int id) throws IOException, ProductHasAtLeastMaxNumberOfImages {
+    public ResponseEntity AddImageToProductWithId(@RequestParam("image") MultipartFile MultiPartImage, @PathVariable int id) throws IOException, ProductHasAtLeastMaxNumberOfImagesException {
         Optional<Product> product = findById(id);
         if(product.isPresent()) {
             Product foundProduct = product.get();
-            if(foundProduct.canNotAddImages()) { throw new ProductHasAtLeastMaxNumberOfImages("Image can't be added"); }
+            if(foundProduct.canNotAddImages()) { throw new ProductHasAtLeastMaxNumberOfImagesException("Image can't be added"); }
             long currentMillis = System.currentTimeMillis();
             String name = currentMillis+id+MultiPartImage.getOriginalFilename();
             uploadsService.uploadImage(MultiPartImage, name);

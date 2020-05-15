@@ -1,6 +1,6 @@
 package ma.eshop.usersapi.controllers;
 
-import ma.eshop.usersapi.errorHandlers.ProductHasAtLeastMaxNumberOfImages;
+import ma.eshop.usersapi.errorHandlers.ProductHasAtLeastMaxNumberOfImagesException;
 import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.models.SimilarProduct;
 import ma.eshop.usersapi.services.ImagesService;
@@ -75,7 +75,7 @@ public class ProductsController {
     public ResponseEntity uploadImage(@RequestParam("image") MultipartFile MultiPartImage, @PathVariable int id){
         try {
             return productsService.AddImageToProductWithId(MultiPartImage, id);
-        } catch(ProductHasAtLeastMaxNumberOfImages e){
+        } catch(ProductHasAtLeastMaxNumberOfImagesException e){
             return ResponseEntity.status(405).body("Product has at least maximum number of images.");
         }catch (IOException e) {
             e.printStackTrace();
