@@ -1,6 +1,6 @@
 package ma.eshop.usersapi.config;
 
-import ma.eshop.usersapi.filters.EntryEntryPoint;
+import ma.eshop.usersapi.filters.EntryPointFilter;
 import ma.eshop.usersapi.filters.JwtRequestFilter;
  import ma.eshop.usersapi.services.MyUserDetailsService;
  import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Inject
     private JwtRequestFilter jwtRequestFilter;
     @Inject
-    private EntryEntryPoint jwtAuthenticationEntryPoint;
+    private EntryPointFilter jwtAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
