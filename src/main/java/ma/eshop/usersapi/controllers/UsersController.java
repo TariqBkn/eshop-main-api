@@ -2,10 +2,13 @@ package ma.eshop.usersapi.controllers;
 
 import ma.eshop.usersapi.models.JwtAuthenticationRequest;
 import ma.eshop.usersapi.models.JwtResponse;
+import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.models.User;
 import ma.eshop.usersapi.services.JwtUtilService;
 import ma.eshop.usersapi.services.MyUserDetailsService;
 import ma.eshop.usersapi.services.UsersService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -82,17 +85,13 @@ public class UsersController {
         usersService.update(user);
     }
 
-    @GetMapping("/{email}")
-    public User getUserData(@PathVariable String email){
-        return null;
+    @GetMapping("/{page}")
+    public Page<User> getUsers(@RequestParam(defaultValue="0") int page){
+        return usersService.findAll(PageRequest.of(page, 30));
     }
 
-
-    @PatchMapping("/admin/block/{email}")
-        public void blockUser(@PathVariable String email){
-    }
-
-    @PatchMapping("/admin/unblock/{email}")
-        public void unblockUser(@PathVariable String email){
+    @GetMapping("/{id}/status/alter")
+    public Page<User> alterAccountStatusOfUserWithId(@RequestBody int userId){
+        return null;// usersService.alterAccountStatusOfUserWithId(userId);
     }
 }
