@@ -2,6 +2,8 @@ package ma.eshop.usersapi.services;
 
 import ma.eshop.usersapi.models.User;
 import ma.eshop.usersapi.repositories.UsersRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -45,5 +47,9 @@ public class UsersService {
             usersRepository.save(foundExistingUser);
         }
 
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return usersRepository.findAllNonAdminUsers(pageable);
     }
 }
