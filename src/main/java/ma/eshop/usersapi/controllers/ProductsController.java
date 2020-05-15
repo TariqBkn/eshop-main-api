@@ -1,11 +1,14 @@
 package ma.eshop.usersapi.controllers;
 
+import ma.eshop.usersapi.errorHandlers.ProductHasAtLeastMaxNumberOfImages;
 import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.models.SimilarProduct;
+import ma.eshop.usersapi.services.ImagesService;
 import ma.eshop.usersapi.services.ProductsService;
 import ma.eshop.usersapi.services.SimilarProductsService;
 import ma.eshop.usersapi.services.UploadsService;
 import org.springframework.batch.core.BatchStatus;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -30,6 +34,8 @@ public class ProductsController {
     @Inject
     private UploadsService uploadsService;
 
+    @Inject
+    private ImagesService imagesService;
 
     @RequestMapping("/{productId}")
     ResponseEntity<Product> findById(@PathVariable int productId){
@@ -60,5 +66,21 @@ public class ProductsController {
         return ResponseEntity.ok(productsService.loadProductsFromCsvFileIntoDataBase());
     }
 
+    @GetMapping(value = "/images/{imageName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<ByteArrayResource> getImage(@PathVariable String imageName){
+        return ResponseEntity.ok().body(imagesService.findImageByName(imageName));
+    }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity uploadImage(@RequestParam("image") MultipartFile MultiPartImage, @PathVariable int id){
+        try {
+            return productsService.AddImageToProductWithId(MultiPartImage, id);
+        } catch(ProductHasAtLeastMaxNumberOfImages e){
+            return ResponseEntity.status(405).body("Product has at least maximum number of images.");
+        }catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }
