@@ -36,4 +36,8 @@ public class OrderLinesService {
     public List<OrderLine> findOderLinesOfUser(int userId) {
         return this.orderLinesRepository.findAllOrderLinesOfUserWithId(userId);
     }
+
+    public List<OrderLine> findOrderLinesByOrderId(int orderId) {
+        return this.orderLinesRepository.findOrderLinesByOrderId(orderId);
+    }
 }
