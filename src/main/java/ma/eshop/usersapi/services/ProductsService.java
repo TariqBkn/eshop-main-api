@@ -132,4 +132,12 @@ public class ProductsService {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
+
+    public long countProducts() {
+        return productRepository.count();
+    }
+
+    public void deleteById(int id) {
+        productRepository.deleteById(id);
+    }
 }
