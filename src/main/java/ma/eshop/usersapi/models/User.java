@@ -30,7 +30,7 @@ public class User {
 
      private Role role;
 
-    protected User(){
+    public User(){
     }
 
     public User(User user) {
@@ -83,7 +83,7 @@ public class User {
         this.email = email.toLowerCase();
     }
 
-    protected boolean isAccountNonLocked() {
+    public boolean isAccountNonLocked() {
         return accountNonLocked;
     }
 
