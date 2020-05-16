@@ -22,4 +22,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             + "or LOWER(p.providerName) like CONCAT('%',?1,'%')"
              )
     List<Product> findByKeyword(String keyword);
+
 }
