@@ -22,10 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductsService {
@@ -116,5 +117,19 @@ public class ProductsService {
             save(productToEdit);
         }
 
+    }
+
+    public List<Product> search(List<String> keywords) {
+        List<Product> foundProducts = new ArrayList<>();
+        for (String keyword: keywords) {
+            foundProducts.addAll(productRepository.findByKeyword(keyword.toLowerCase()));
+        }
+        foundProducts=foundProducts.stream().filter(distinctByKey(Product::getId)).collect(Collectors.toList());
+        return foundProducts;
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 }
