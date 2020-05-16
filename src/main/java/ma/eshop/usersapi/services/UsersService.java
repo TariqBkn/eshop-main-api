@@ -60,4 +60,16 @@ public class UsersService {
     public void alterAccountStatusOfUserWithId(int userId) {
          usersRepository.alterAccountStatusOfUserWithId(userId);
     }
+
+    public int blockedUsersNumber() {
+        return usersRepository.countBlocked();
+    }
+
+    public long count() {
+        return usersRepository.count();
+    }
+
+    public void deleteById(int id) {
+        usersRepository.deleteById(id);
+    }
 }
