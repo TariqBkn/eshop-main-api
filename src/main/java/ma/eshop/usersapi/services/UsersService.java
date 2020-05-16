@@ -52,4 +52,12 @@ public class UsersService {
     public Page<User> findAll(Pageable pageable) {
         return usersRepository.findAllNonAdminUsers(pageable);
     }
+
+    public Page<User> search(Pageable pageable, String keyword) {
+        return usersRepository.search(pageable, keyword);
+    }
+
+    public void alterAccountStatusOfUserWithId(int userId) {
+         usersRepository.alterAccountStatusOfUserWithId(userId);
+    }
 }
