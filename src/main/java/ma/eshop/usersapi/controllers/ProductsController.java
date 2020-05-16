@@ -100,4 +100,9 @@ public class ProductsController {
         productsService.patchProductTextualData(id, newProduct);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(value = "/search")
+    public List<Product> search(@RequestBody List<String> keywords){
+        return productsService.search(keywords);
+    }
 }
