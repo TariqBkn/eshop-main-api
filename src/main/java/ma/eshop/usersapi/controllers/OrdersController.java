@@ -36,4 +36,9 @@ public class OrdersController {
     List<Order> getOrdersHistory(@AuthenticationPrincipal User connectedUser){
         return ordersService.findCheckoutsOfConnectedUser(connectedUser.getId());
     }
+
+    @GetMapping("/turnover")
+    float getTurnover(){
+        return ordersService.getTurnover();
+    }
 }
