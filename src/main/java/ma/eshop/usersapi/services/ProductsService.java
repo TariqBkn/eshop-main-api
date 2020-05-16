@@ -47,7 +47,7 @@ public class ProductsService {
         return productRepository.findById(id);
     }
 
-    public Page<Product> findAllProducts(Pageable pageable) {
+    public Page<Product> findAll(Pageable pageable) {
         return productRepository.findAllProducts(pageable);
     }
 
@@ -92,4 +92,29 @@ public class ProductsService {
         }
     }
 
+    public void removeImageOfProduct(String imageName, int id) {
+         Optional<Product> product = findById(id);
+         if(product.isPresent()){
+             Product foundProduct = removeImageFromProduct(imageName, product);
+             save(foundProduct);
+         }
+    }
+
+    private Product removeImageFromProduct(String imageName, Optional<Product> product) {
+        Product foundProduct = product.get();
+
+        foundProduct.getImages()
+                    .removeIf(image -> image.getName().equals(imageName));
+        return foundProduct;
+    }
+
+    public void patchProductTextualData(int id, Product newProduct) {
+        Optional<Product> product = findById(id);
+        if(product.isPresent()){
+            Product productToEdit = product.get();
+            productToEdit.patchTextualDataFrom(newProduct);
+            save(productToEdit);
+        }
+
+    }
 }
