@@ -100,4 +100,19 @@ public class UsersController {
         return usersService.search(PageRequest.of(page, 30), keyword.toLowerCase());
     }
 
+    @GetMapping("/blocked/count")
+    int getNumberOfBlockedUser(){
+        return usersService.blockedUsersNumber();
+    }
+
+    @GetMapping("/count")
+    long count(){
+        return usersService.count();
+    }
+
+    @DeleteMapping("/{id}")
+    void delete(@PathVariable int id){
+        usersService.deleteById(id);
+    }
+
 }
