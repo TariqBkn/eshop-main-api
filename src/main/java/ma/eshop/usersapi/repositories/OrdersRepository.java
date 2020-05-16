@@ -33,4 +33,6 @@ public interface OrdersRepository extends JpaRepository< Order, Integer> {
 
     @Query("select o from Order o where o.user.id=?1 and o.checkedOut=true")
     List<Order> findAllDoneByUser(int id);
+    @Query("select o from Order o where o.checkedOut=true")
+    List<Order> findAllDone();
 }
