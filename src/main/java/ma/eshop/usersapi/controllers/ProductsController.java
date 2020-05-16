@@ -37,27 +37,27 @@ public class ProductsController {
     @Inject
     private ImagesService imagesService;
 
-    @RequestMapping("/{productId}")
-    ResponseEntity<Product> findById(@PathVariable int productId){
-        Optional<Product> product = productsService.findById(productId);
+    @RequestMapping("/{id}")
+    ResponseEntity<Product> findById(@PathVariable int id){
+        Optional<Product> product = productsService.findById(id);
         if(product.isPresent()){
             return ResponseEntity.ok().body(product.get());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping("/{productId}/similar")
-    public ResponseEntity<List<SimilarProduct>> getSimilarProductsOf(@PathVariable int productId) throws UnsupportedEncodingException {
-        Optional<Product> product = productsService.findById(productId);
+    @GetMapping("/{id}/similar")
+    public ResponseEntity<List<SimilarProduct>> getSimilarProductsOf(@PathVariable int id) throws UnsupportedEncodingException {
+        Optional<Product> product = productsService.findById(id);
         if(product.isPresent()){
-               return ResponseEntity.ok().body(similarProductsService.getSimilarProductsOf(productId));
+               return ResponseEntity.ok().body(similarProductsService.getSimilarProductsOf(id));
         }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping("")
     public Page<Product> getProducts(@RequestParam(defaultValue="0") int page){
-        return productsService.findAllProducts(PageRequest.of(page, 30));
+        return productsService.findAll(PageRequest.of(page, 30));
     }
 
     @PostMapping(value = "/bulk-add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -68,10 +68,10 @@ public class ProductsController {
 
     @GetMapping(value = "/images/{imageName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<ByteArrayResource> getImage(@PathVariable String imageName){
-        return ResponseEntity.ok().body(imagesService.findImageByName(imageName));
+        return ResponseEntity.ok().body(imagesService.findByName(imageName));
     }
 
-    @PostMapping("/{id}/image")
+    @PostMapping("/{id}/images")
     public ResponseEntity uploadImage(@RequestParam("image") MultipartFile MultiPartImage, @PathVariable int id){
         try {
             return productsService.AddImageToProductWithId(MultiPartImage, id);
@@ -83,4 +83,21 @@ public class ProductsController {
         }
     }
 
+    @DeleteMapping("/{id}/images/{imageName}")
+    public ResponseEntity deleteImage(@PathVariable("id") int id, @PathVariable("imageName") String imageName){
+        try {
+            productsService.removeImageOfProduct(imageName, id);
+            imagesService.deleteByName(imageName);
+            return ResponseEntity.ok().body("deleted");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Could not delete image");
+        }
+    }
+
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity updateProduct(@RequestBody Product newProduct, @PathVariable int id){
+        productsService.patchProductTextualData(id, newProduct);
+        return ResponseEntity.ok().build();
+    }
 }
