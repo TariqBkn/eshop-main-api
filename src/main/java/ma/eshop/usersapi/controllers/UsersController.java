@@ -90,8 +90,14 @@ public class UsersController {
         return usersService.findAll(PageRequest.of(page, 30));
     }
 
-    @GetMapping("/{id}/status/alter")
-    public Page<User> alterAccountStatusOfUserWithId(@RequestBody int userId){
-        return null;// usersService.alterAccountStatusOfUserWithId(userId);
+    @PatchMapping("/status/alter")
+    public void alterAccountStatusOfUserWithId(@RequestBody int userId){
+        usersService.alterAccountStatusOfUserWithId(userId);
     }
+
+    @GetMapping("/search/{keyword}/pages/{page}")
+    Page<User> search(@PathVariable String keyword, @PathVariable int page){
+        return usersService.search(PageRequest.of(page, 30), keyword.toLowerCase());
+    }
+
 }
