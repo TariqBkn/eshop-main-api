@@ -105,4 +105,15 @@ public class ProductsController {
     public List<Product> search(@RequestBody List<String> keywords){
         return productsService.search(keywords);
     }
+
+    @GetMapping(value = "/count")
+    public long count(){
+        return productsService.countProducts();
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable int id){
+        productsService.deleteById(id);
+    }
+
 }
