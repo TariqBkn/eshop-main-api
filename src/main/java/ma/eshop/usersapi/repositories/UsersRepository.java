@@ -38,4 +38,6 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
     @Transactional
     @Query("update User u SET u.accountNonLocked= CASE u.accountNonLocked WHEN TRUE THEN FALSE ELSE TRUE END where u.id = ?1")
     void alterAccountStatusOfUserWithId(int userId);
+    @Query("select count(u) from User u where u.accountNonLocked=false")
+    int countBlocked();
 }
