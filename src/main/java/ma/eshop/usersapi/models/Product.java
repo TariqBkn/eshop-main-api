@@ -20,7 +20,6 @@ public class Product {
     private List<Image> images;
     @NotEmpty
     private  String providerName;
-    private float note=-1;
     private int quantityInStock=0;
     private float promotionRatio=0;
     @Transient
@@ -31,6 +30,16 @@ public class Product {
 
     public boolean canNotAddImages() {
         return images.size()>=MAX_NUMBER_OF_IMAGES;
+    }
+
+    public void patchTextualDataFrom(Product newProduct) {
+        setTitle(newProduct.getTitle());
+        setUnitPrice(newProduct.getUnitPrice());
+        setDescription(newProduct.getDescription());
+        setQuantityInStock(newProduct.getQuantityInStock());
+        setPromotionRatio(newProduct.getPromotionRatio());
+        setProviderName(newProduct.getProviderName());
+        setColor(newProduct.getColor());
     }
 
 
@@ -121,14 +130,6 @@ public class Product {
 
     public void setProviderName(String providerName) {
         this.providerName = providerName;
-    }
-
-    public float getNote() {
-        return note;
-    }
-
-    public void setNote(float note) {
-        this.note = note;
     }
 
     public int getQuantityInStock() {
