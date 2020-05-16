@@ -120,4 +120,10 @@ public class OrdersService {
     public List<Order> findCheckoutsOfConnectedUser(int userId) {
         return ordersRepository.findAllDoneByUser(userId);
     }
+
+    public float getTurnover() {
+        return ordersRepository.findAllDone().stream().map(order -> order.getTotalCost()).reduce(0F,(a, b) -> a+b);
+    }
+
+
 }
