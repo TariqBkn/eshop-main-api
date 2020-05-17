@@ -5,6 +5,7 @@ import ma.eshop.usersapi.models.User;
 import ma.eshop.usersapi.services.OrdersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,7 @@ public class OrdersController {
         return ordersService.findCheckoutsOfConnectedUser(connectedUser.getId());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/turnover")
     float getTurnover(){
         return ordersService.getTurnover();

@@ -1,9 +1,6 @@
 package ma.eshop.usersapi.controllers;
 
-import ma.eshop.usersapi.models.JwtAuthenticationRequest;
-import ma.eshop.usersapi.models.JwtResponse;
-import ma.eshop.usersapi.models.Product;
-import ma.eshop.usersapi.models.User;
+import ma.eshop.usersapi.models.*;
 import ma.eshop.usersapi.services.JwtUtilService;
 import ma.eshop.usersapi.services.MyUserDetailsService;
 import ma.eshop.usersapi.services.UsersService;
@@ -11,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -72,6 +70,7 @@ public class UsersController {
         if(usersService.existsByEmail(user.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("email_linked_to_an_other_account");
         }
+        if(usersService.noUsersInDatabase()){user.setRole(Role.ADMIN);}
         usersService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("created");
     }
@@ -99,12 +98,13 @@ public class UsersController {
     Page<User> search(@PathVariable String keyword, @PathVariable int page){
         return usersService.search(PageRequest.of(page, 30), keyword.toLowerCase());
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/blocked/count")
     int getNumberOfBlockedUser(){
         return usersService.blockedUsersNumber();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/count")
     long count(){
         return usersService.count();

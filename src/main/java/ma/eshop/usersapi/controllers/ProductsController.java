@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +61,7 @@ public class ProductsController {
         return productsService.findAll(PageRequest.of(page, 30));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/bulk-add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BatchStatus> bulkAddProducts(@RequestParam("file") MultipartFile productsFile) throws Exception{
         uploadsService.uploadCsvFile(productsFile);
@@ -106,11 +108,13 @@ public class ProductsController {
         return productsService.search(keywords);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/count")
     public long count(){
         return productsService.countProducts();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{id}")
     public void delete(@PathVariable int id){
         productsService.deleteById(id);
