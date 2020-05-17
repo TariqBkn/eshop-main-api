@@ -19,7 +19,6 @@ public class UsersService {
     }
 
     public void createUser(User user) {
-        System.out.println("username"+user.getEmail());
          usersRepository.save(user);
     }
 
@@ -71,5 +70,9 @@ public class UsersService {
 
     public void deleteById(int id) {
         usersRepository.deleteById(id);
+    }
+
+    public boolean noUsersInDatabase() {
+        return count()==0;
     }
 }
