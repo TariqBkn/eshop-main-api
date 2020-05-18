@@ -16,6 +16,7 @@ public class UploadsService {
 
     public void uploadCsvFile(MultipartFile multipartProductsFile) throws IOException {
         File productsCsvFile = new File(productsInputStorageLocation);
+        productsCsvFile.getParentFile().mkdirs();
         productsCsvFile.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(productsCsvFile);
         fileOutputStream.write(multipartProductsFile.getBytes());
@@ -24,6 +25,7 @@ public class UploadsService {
 
     public void uploadImage(MultipartFile multipartProductsFile,String name ) throws IOException {
         File imageFile = new File(imagesBaseLocation+name);
+        imageFile.getParentFile().mkdirs();
         imageFile.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
         fileOutputStream.write(multipartProductsFile.getBytes());
