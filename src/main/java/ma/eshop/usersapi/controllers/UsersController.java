@@ -55,14 +55,15 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    private void authenticate(String username, String password) throws Exception {
+    private ResponseEntity authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")
