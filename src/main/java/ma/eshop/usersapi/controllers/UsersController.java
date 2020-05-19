@@ -25,45 +25,18 @@ import java.util.Optional;
 @RequestMapping(value = "/users")
 public class UsersController {
     @Inject
-    private AuthenticationManager authenticationManager;
-
-    @Inject
-    private MyUserDetailsService userDetailsService;
-
-    @Inject
-    private JwtUtilService jwtUtilService;
-
-    @Inject
     private UsersService usersService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtAuthenticationRequest jwtAuthenticationRequest) {
         try {
-            authenticate(jwtAuthenticationRequest.getUsername(), jwtAuthenticationRequest.getPassword());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(jwtAuthenticationRequest.getUsername());
-        final String token = jwtUtilService.generateToken(userDetails);
-
-        Optional<User> user = usersService.GetByEmail(jwtAuthenticationRequest.getUsername());
-        if(user.isPresent()) {
-            User foundUser = user.get();
-            return ResponseEntity.ok(new JwtResponse(token, foundUser));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    private ResponseEntity authenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            usersService.authenticate(jwtAuthenticationRequest);
+            return usersService.getJwtResponseResponseEntity(jwtAuthenticationRequest);
         } catch (DisabledException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")
@@ -71,7 +44,6 @@ public class UsersController {
         if(usersService.existsByEmail(user.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("email_linked_to_an_other_account");
         }
-        if(usersService.noUsersInDatabase()){user.setRole(Role.ADMIN);}
         usersService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("created");
     }

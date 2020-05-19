@@ -1,10 +1,19 @@
 package ma.eshop.usersapi.services;
 
+import ma.eshop.usersapi.models.JwtAuthenticationRequest;
+import ma.eshop.usersapi.models.JwtResponse;
+import ma.eshop.usersapi.models.Role;
 import ma.eshop.usersapi.models.User;
 import ma.eshop.usersapi.repositories.UsersRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -14,12 +23,39 @@ public class UsersService {
     @Inject
     UsersRepository usersRepository;
 
+    @Inject
+    JwtUtilService jwtUtilService;
+
+    @Inject
+    private AuthenticationManager authenticationManager;
+
+    @Inject
+    private MyUserDetailsService userDetailsService;
+
     public Optional<User> GetByEmail(String login) {
         return usersRepository.findByEmail(login);
     }
 
     public void createUser(User user) {
+        if(noUsersInDatabase()){user.setRole(Role.ADMIN);}
          usersRepository.save(user);
+    }
+
+    public ResponseEntity<JwtResponse> getJwtResponseResponseEntity(@RequestBody JwtAuthenticationRequest jwtAuthenticationRequest) {
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(jwtAuthenticationRequest.getUsername());
+        final String token = jwtUtilService.generateToken(userDetails);
+        final Optional<User> user = GetByEmail(jwtAuthenticationRequest.getUsername());
+
+        if(user.isPresent()) {
+            final User foundUser = user.get();
+            return ResponseEntity.ok(new JwtResponse(token, foundUser));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    public ResponseEntity authenticate(JwtAuthenticationRequest jwtAuthenticationRequest) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtAuthenticationRequest.getUsername(), jwtAuthenticationRequest.getPassword()));
+        return ResponseEntity.ok().build();
     }
 
     public boolean existsByEmail(String email) {

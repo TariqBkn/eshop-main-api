@@ -26,7 +26,6 @@ public class OrderLinesController {
     @PostMapping("")
     @Transactional
     ResponseEntity add(@AuthenticationPrincipal User connectedUser, @RequestBody OrderLine orderLine){
-        // there is an undone order of currentUser
         if(ordersService.userHasUndoneOrders(connectedUser.getId())){
             ordersService.makeSureThereIsOnlyOneUndoneOrder(connectedUser);
             try {
