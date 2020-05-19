@@ -24,26 +24,34 @@ public class SimilarProductsService {
     private String similarityCalculatorAPIUrl;
      public List<SimilarProduct> getSimilarProductsOf(int productId) throws UnsupportedEncodingException {
 
-           WebClient webClient = WebClient
-                .builder()
-                .baseUrl(similarityCalculatorAPIUrl.strip()+"/products/"+productId+"/similar") //getResourceLocationOfProduct(productId)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
+           WebClient webClient = buildWebClientOfSimilarityCalculatorApi(productId);
 
         WebClient.ResponseSpec similarProductsTest = webClient.get()
                 .retrieve();
 
-             List<SimilarProduct> similarProducts = webClient.get()
-                .retrieve()
-                .toEntityList(SimilarProductDTO.class)
-                .block()
-                .getBody()
-                .stream()
-                .filter(similarProductDTO -> productsService.existsById(similarProductDTO.getProductId()))
-                .map(similarProductDTO -> new SimilarProduct(productsService.findById(similarProductDTO.getProductId()).get(), similarProductDTO.getSimilarityPercentage()))
-                .collect(Collectors.toList());
+             List<SimilarProduct> similarProducts = getListOfSimilarProducts(webClient);
 
         return similarProducts;
+    }
+
+    private List<SimilarProduct> getListOfSimilarProducts(WebClient webClient) {
+        return webClient.get()
+           .retrieve()
+           .toEntityList(SimilarProductDTO.class)
+           .block()
+           .getBody()
+           .stream()
+           .filter(similarProductDTO -> productsService.existsById(similarProductDTO.getProductId()))
+           .map(similarProductDTO -> new SimilarProduct(productsService.findById(similarProductDTO.getProductId()).get(), similarProductDTO.getSimilarityPercentage()))
+           .collect(Collectors.toList());
+    }
+
+    private WebClient buildWebClientOfSimilarityCalculatorApi(int productId) {
+        return WebClient
+             .builder()
+             .baseUrl(similarityCalculatorAPIUrl.strip()+"/products/"+productId+"/similar") //getResourceLocationOfProduct(productId)
+             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+             .build();
     }
 
     private String getResourceLocationOfProduct(int productId) {

@@ -61,15 +61,18 @@ public class ProductsService {
     }
 
     public BatchStatus loadProductsFromCsvFileIntoDataBase() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-        Map<String, JobParameter> jobParameterMap = new HashMap<>();
-        jobParameterMap.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(jobParameterMap);
+        JobParameters jobParameters = getJobParameters();
         JobExecution jobExecution = jobLauncher.run(job, jobParameters);
-
-        if(jobExecution.isRunning()) {
-            logger.debug("NEW PRODUCTS BATCH RUNNING");
+        while(jobExecution.isRunning()) {
+            logger.debug("NEW PRODUCTS BATCH RUNNING...");
         }
         return jobExecution.getStatus();
+    }
+
+    private JobParameters getJobParameters() {
+        Map<String, JobParameter> jobParameterMap = new HashMap<>();
+        jobParameterMap.put("time", new JobParameter(System.currentTimeMillis()));
+        return new JobParameters(jobParameterMap);
     }
 
     public void save(Product product){
@@ -81,16 +84,28 @@ public class ProductsService {
         if(product.isPresent()) {
             Product foundProduct = product.get();
             if(foundProduct.canNotAddImages()) { throw new ProductHasAtLeastMaxNumberOfImagesException("Image can't be added"); }
-            long currentMillis = System.currentTimeMillis();
-            String name = currentMillis+id+MultiPartImage.getOriginalFilename();
-            uploadsService.uploadImage(MultiPartImage, name);
-            Image image = new Image(foundProduct, name);
-            foundProduct.addImage(image);
-            save(foundProduct);
+            String name = makeUniqueNameOfImage(MultiPartImage, id);
+            persistImage(MultiPartImage, foundProduct, name);
             return ResponseEntity.ok().build();
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }
+    }
+
+    private void persistImage(@RequestParam("image") MultipartFile MultiPartImage, Product foundProduct, String name) throws IOException {
+        uploadsService.uploadImage(MultiPartImage, name);
+        attachImageToProduct(foundProduct, name);
+        save(foundProduct);
+    }
+
+    private void attachImageToProduct(Product foundProduct, String name) {
+        Image image = new Image(foundProduct, name);
+        foundProduct.addImage(image);
+    }
+
+    private String makeUniqueNameOfImage(@RequestParam("image") MultipartFile MultiPartImage, @PathVariable int id) {
+        long currentMillis = System.currentTimeMillis();
+        return currentMillis+id+MultiPartImage.getOriginalFilename();
     }
 
     public void removeImageOfProduct(String imageName, int id) {
@@ -109,14 +124,17 @@ public class ProductsService {
         return foundProduct;
     }
 
-    public void patchProductTextualData(int id, Product newProduct) {
-        Optional<Product> product = findById(id);
+    public void patchProductTextualData(int existingProductId, Product newProduct) {
+        Optional<Product> product = findById(existingProductId);
         if(product.isPresent()){
-            Product productToEdit = product.get();
-            productToEdit.patchTextualDataFrom(newProduct);
-            save(productToEdit);
+            patchTextualDataOfNewProductIntoExistingProduct(newProduct, product.get());
         }
 
+    }
+
+    private void patchTextualDataOfNewProductIntoExistingProduct(Product newProduct, Product existingProduct) {
+        existingProduct.patchTextualDataFrom(newProduct);
+        save(existingProduct);
     }
 
     public List<Product> search(List<String> keywords) {
@@ -124,8 +142,12 @@ public class ProductsService {
         for (String keyword: keywords) {
             foundProducts.addAll(productRepository.findByKeyword(keyword.toLowerCase()));
         }
-        foundProducts=foundProducts.stream().filter(distinctByKey(Product::getId)).collect(Collectors.toList());
-        return foundProducts;
+        List<Product> uniqueFoundProducts = removeDuplicatesFromFoundProducts(foundProducts);
+        return uniqueFoundProducts;
+    }
+
+    private List<Product> removeDuplicatesFromFoundProducts(List<Product> foundProducts) {
+        return foundProducts.stream().filter(distinctByKey(Product::getId)).collect(Collectors.toList());
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

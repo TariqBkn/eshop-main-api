@@ -36,19 +36,27 @@ public class OrdersService {
          return ordersRepository.userHasUndoneOrder(userId);
     }
 
-    public void addQuantityToExistingOrderLine(@AuthenticationPrincipal User currentUser, @RequestBody OrderLine orderLine) throws QuantityInStockExceededException {
+    public void addQuantityToExistingOrderLine(@AuthenticationPrincipal User currentUser, @RequestBody OrderLine newOrderLine) throws QuantityInStockExceededException {
         Order order = getUndoneOrderOfUser(currentUser.getId());
-        Optional<OrderLine> existingOrderLineOfSameProduct = order.findOrderLineOfProduct(orderLine.getProductId());
+        Optional<OrderLine> existingOrderLineOfSameProduct = order.findOrderLineOfProduct(newOrderLine.getProductId());
         if(existingOrderLineOfSameProduct.isPresent()){
-            OrderLine existingOrderLine = existingOrderLineOfSameProduct.get();
-            existingOrderLine.addQuantity(orderLine.getQuantity());
-            orderLinesService.save(existingOrderLine);
+            addNewQuantityInExistingOrderLine(newOrderLine, existingOrderLineOfSameProduct.get());
         }else {
-            order.addOrderLine(orderLine);
-            orderLine.setOrder(order);
-            save(order);
+            addNewOrderLineInExistingUndoneOrder(newOrderLine, order);
         }
     }
+
+    private void addNewOrderLineInExistingUndoneOrder(@RequestBody OrderLine newOrderLine, Order order) {
+        order.addOrderLine(newOrderLine);
+        newOrderLine.setOrder(order);
+        save(order);
+    }
+
+    private void addNewQuantityInExistingOrderLine(@RequestBody OrderLine newOrderLine, OrderLine existingOrderLineOfSameProduct) throws QuantityInStockExceededException {
+        existingOrderLineOfSameProduct.addQuantity(newOrderLine.getQuantity());
+        orderLinesService.save(existingOrderLineOfSameProduct);
+    }
+
     public void makeSureThereIsOnlyOneUndoneOrder(User user) {
         if (userHasMoreThanOneUndoneOrder(user)) {
             keepOnlyOneUndoneOrder(user);
@@ -58,17 +66,26 @@ public class OrdersService {
     public boolean userHasNoUndoneOrders(int userId){
         return ordersRepository.userHasNoUndoneOrders(userId);
     }
+
     private void keepOnlyOneUndoneOrder(User currentUser) {
         List<OrderLine> orderLinesOfUser = orderLinesService.findOderLinesOfUser(currentUser.getId());
-        List<Order> orders = findUndoneOrdersOfUserWithId(currentUser);
+        List<Order> undoneOrdersOfCurrentUser = findUndoneOrdersOfUserWithId(currentUser);
         Order orderToKeep;
-        if(orders.size()>0){
-            orderToKeep = orders.get(0);
-            orderLinesOfUser.forEach(orderLine -> orderLine.setOrder(orderToKeep));
-            orderLinesOfUser.forEach(orderLine -> orderToKeep.addOrderLine(orderLine));
+        if(undoneOrdersOfCurrentUser.size()>0){
+            orderToKeep = undoneOrdersOfCurrentUser.get(0);
+            putAllOrderLinesOfCurrentUserInTheOrderToKeep(orderLinesOfUser, orderToKeep);
             ordersRepository.save(orderToKeep);
-            orders.stream().filter(order -> order.getId() != orderToKeep.getId()).forEach(order -> ordersRepository.delete(order));
+            deleteAllOtherUndoneOrders(undoneOrdersOfCurrentUser, orderToKeep);
         }
+    }
+
+    private void deleteAllOtherUndoneOrders(List<Order> undoneOrdersOfCurrentUser, Order orderToKeep) {
+        undoneOrdersOfCurrentUser.stream().filter(order -> order.getId() != orderToKeep.getId()).forEach(order -> ordersRepository.delete(order));
+    }
+
+    private void putAllOrderLinesOfCurrentUserInTheOrderToKeep(List<OrderLine> orderLinesOfUser, Order orderToKeep) {
+        orderLinesOfUser.forEach(orderLine -> orderLine.setOrder(orderToKeep));
+        orderLinesOfUser.forEach(orderLine -> orderToKeep.addOrderLine(orderLine));
     }
 
     private List<Order> findUndoneOrdersOfUserWithId(User user) {
