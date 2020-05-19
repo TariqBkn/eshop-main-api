@@ -38,7 +38,7 @@ public class ProductsController {
     @Inject
     private ImagesService imagesService;
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<Product> findById(@PathVariable int id){
         Optional<Product> product = productsService.findById(id);
         if(product.isPresent()){
