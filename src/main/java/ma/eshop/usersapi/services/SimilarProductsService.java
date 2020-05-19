@@ -18,18 +18,22 @@ import java.util.stream.Collectors;
 
 @Service
 public class SimilarProductsService {
-    @Inject
-    private ProductsService productsService;
+
+    private final ProductsService productsService;
+
     @Value("${productSimilarityCalculatorApi}")
     private String similarityCalculatorAPIUrl;
-     public List<SimilarProduct> getSimilarProductsOf(int productId) throws UnsupportedEncodingException {
 
-           WebClient webClient = buildWebClientOfSimilarityCalculatorApi(productId);
+    @Inject
+    public SimilarProductsService(ProductsService productsService) {
+        this.productsService = productsService;
+    }
 
-        WebClient.ResponseSpec similarProductsTest = webClient.get()
-                .retrieve();
+    public List<SimilarProduct> getSimilarProductsOf(int productId) throws UnsupportedEncodingException {
 
-             List<SimilarProduct> similarProducts = getListOfSimilarProducts(webClient);
+        WebClient webClient = buildWebClientOfSimilarityCalculatorApiForSimilarProductsOf(productId);
+
+        List<SimilarProduct> similarProducts = getListOfSimilarProducts(webClient);
 
         return similarProducts;
     }
@@ -46,7 +50,7 @@ public class SimilarProductsService {
            .collect(Collectors.toList());
     }
 
-    private WebClient buildWebClientOfSimilarityCalculatorApi(int productId) {
+    private WebClient buildWebClientOfSimilarityCalculatorApiForSimilarProductsOf(int productId) {
         return WebClient
              .builder()
              .baseUrl(similarityCalculatorAPIUrl.strip()+"/products/"+productId+"/similar") //getResourceLocationOfProduct(productId)
@@ -54,7 +58,4 @@ public class SimilarProductsService {
              .build();
     }
 
-    private String getResourceLocationOfProduct(int productId) {
-         return similarityCalculatorAPIUrl+"products"+productId+"/similar";
-    }
 }

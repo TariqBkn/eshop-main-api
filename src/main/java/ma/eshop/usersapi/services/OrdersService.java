@@ -17,12 +17,19 @@ import java.util.Optional;
 
 @Service
 public class OrdersService {
+
+    private final OrdersRepository ordersRepository;
+
+    private final OrderLinesService orderLinesService;
+
+    private final ProductsService productsService;
+
     @Inject
-    private OrdersRepository ordersRepository;
-    @Inject
-    private OrderLinesService orderLinesService;
-    @Inject
-    private ProductsService productsService;
+    public OrdersService(OrdersRepository ordersRepository, OrderLinesService orderLinesService, ProductsService productsService) {
+        this.ordersRepository = ordersRepository;
+        this.orderLinesService = orderLinesService;
+        this.productsService = productsService;
+    }
 
     public Order getUndoneOrderOfUser(int userId) {
         return ordersRepository.getUndoneOrderOfUser(userId);
@@ -108,6 +115,7 @@ public class OrdersService {
         orderLine.setOrder(order);
         return order;
     }
+
     @Transactional
     public void checkoutOrder(int orderId) {
         ordersRepository.checkoutOrder(orderId);

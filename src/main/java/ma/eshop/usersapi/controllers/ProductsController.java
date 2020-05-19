@@ -26,17 +26,21 @@ import java.util.*;
 @RestController
 @RequestMapping("/products")
 public class ProductsController {
-    @Inject
-    private ProductsService productsService;
+    private final ProductsService productsService;
+
+    private final SimilarProductsService similarProductsService;
+
+    private final UploadsService uploadsService;
+
+    private final ImagesService imagesService;
 
     @Inject
-    private SimilarProductsService similarProductsService;
-
-    @Inject
-    private UploadsService uploadsService;
-
-    @Inject
-    private ImagesService imagesService;
+    public ProductsController(ProductsService productsService, SimilarProductsService similarProductsService, UploadsService uploadsService, ImagesService imagesService) {
+        this.productsService = productsService;
+        this.similarProductsService = similarProductsService;
+        this.uploadsService = uploadsService;
+        this.imagesService = imagesService;
+    }
 
     @GetMapping("/{id}")
     ResponseEntity<Product> findById(@PathVariable int id){

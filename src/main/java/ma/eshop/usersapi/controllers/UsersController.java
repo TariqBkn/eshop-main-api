@@ -24,8 +24,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/users")
 public class UsersController {
+
+    private final UsersService usersService;
+
     @Inject
-    private UsersService usersService;
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtAuthenticationRequest jwtAuthenticationRequest) {

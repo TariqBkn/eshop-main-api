@@ -43,14 +43,6 @@ public class User {
         this.id=user.getId();
     }
 
-    public User(String firstName, String lastName, String email, String password){
-        this.firstName=firstName;
-        this.lastName=lastName;
-        this.email=email;
-        this.password=password;
-        this.role=Role.USER;
-    }
-
     public void setAddress(Address address) {
         this.address = address;
     }
@@ -117,7 +109,7 @@ public class User {
     public void setAddressNumber(String number){
         address.setNumber(number);
     }
-    public void setAdressStreetName(String streetName){
+    public void setAddressStreetName(String streetName){
         address.setStreetName(streetName);
     }
     @JsonIgnore

@@ -73,7 +73,7 @@ public class UsersService {
 
             foundExistingUser.setAddressCity(user.getAddressCity());
             foundExistingUser.setAddressNumber(user.getAddressNumber());
-            foundExistingUser.setAdressStreetName(user.getAddressStreetName());
+            foundExistingUser.setAddressStreetName(user.getAddressStreetName());
             foundExistingUser.setFirstName(user.getFirstName());
             foundExistingUser.setLastName(user.getLastName());
             foundExistingUser.setPassword(user.getPassword());

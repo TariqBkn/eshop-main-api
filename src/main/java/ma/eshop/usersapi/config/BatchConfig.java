@@ -28,15 +28,18 @@ import javax.inject.Inject;
 @EnableBatchProcessing
 public class BatchConfig {
 
-    @Inject
-    private JobBuilderFactory jobBuilderFactory;
+    private final JobBuilderFactory jobBuilderFactory;
+
+    private final StepBuilderFactory stepBuilderFactory;
+
+    private final ItemReader<Product> productItemReader;
 
     @Inject
-    private StepBuilderFactory stepBuilderFactory;
-
-    @Inject
-    private ItemReader<Product> productItemReader;
-
+    public BatchConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, ItemReader<Product> productItemReader) {
+        this.jobBuilderFactory = jobBuilderFactory;
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.productItemReader = productItemReader;
+    }
 
     @Bean
     public Job productJob() {

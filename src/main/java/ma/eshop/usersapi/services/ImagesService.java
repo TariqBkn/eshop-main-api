@@ -26,40 +26,40 @@ public class ImagesService {
         return getByteArrayResource(byteArrayOutputStream);
     }
 
-        private File getFileFromPath(String path){
-            return new File(path);
-        }
+    private File getFileFromPath(String path){
+        return new File(path);
+    }
 
-        private ByteArrayResource getByteArrayResource(ByteArrayOutputStream byteArrayOutputStream) {
-            byte [] imageBytes = byteArrayOutputStream.toByteArray();
-            imageBytes =  Base64.getEncoder().encodeToString(imageBytes).getBytes();
-            return new ByteArrayResource(imageBytes);
-        }
+    private ByteArrayResource getByteArrayResource(ByteArrayOutputStream byteArrayOutputStream) {
+        byte [] imageBytes = byteArrayOutputStream.toByteArray();
+        imageBytes =  Base64.getEncoder().encodeToString(imageBytes).getBytes();
+        return new ByteArrayResource(imageBytes);
+    }
 
-        private ByteArrayOutputStream getByteArrayOutputStream(String imageName, BufferedImage bufferedImage) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            try {
-                String formatName = getImageFileExtension(imageName);
-                ImageIO.write(bufferedImage, formatName, byteArrayOutputStream );
-            } catch (IOException e) {
-                try{
-                    writeAsPng(bufferedImage, byteArrayOutputStream);
-                }catch(IOException IOe){
-                    IOe.printStackTrace();
-                }
+    private ByteArrayOutputStream getByteArrayOutputStream(String imageName, BufferedImage bufferedImage) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            String formatName = getImageFileExtension(imageName);
+            ImageIO.write(bufferedImage, formatName, byteArrayOutputStream );
+        } catch (IOException e) {
+            try{
+                writeAsPng(bufferedImage, byteArrayOutputStream);
+            }catch(IOException IOe){
+                IOe.printStackTrace();
             }
-            return byteArrayOutputStream;
         }
+        return byteArrayOutputStream;
+    }
 
-        private void writeAsPng(BufferedImage bufferedImage, ByteArrayOutputStream byteArrayOutputStream) throws IOException {
-            ImageIO.write(bufferedImage,"png", byteArrayOutputStream );
-        }
+    private void writeAsPng(BufferedImage bufferedImage, ByteArrayOutputStream byteArrayOutputStream) throws IOException {
+        ImageIO.write(bufferedImage,"png", byteArrayOutputStream );
+    }
 
-        private String getImageFileExtension(String imageName) {
-            return imageName.split("\\.")[1];
-        }
+    private String getImageFileExtension(String imageName) {
+        return imageName.split("\\.")[1];
+    }
 
-        private BufferedImage getBufferedImage(String path, File file) {
+    private BufferedImage getBufferedImage(String path, File file) {
         BufferedImage bufferedImage = null;
         try {
             bufferedImage = ImageIO.read(file);

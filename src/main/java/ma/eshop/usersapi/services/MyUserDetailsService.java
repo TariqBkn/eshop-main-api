@@ -18,8 +18,12 @@ public class MyUserDetailsService implements UserDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyUserDetails.class);
 
+    private final UsersRepository usersRepository;
+
     @Inject
-    private UsersRepository usersRepository;
+    public MyUserDetailsService(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException{

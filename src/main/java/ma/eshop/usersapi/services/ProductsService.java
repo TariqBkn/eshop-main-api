@@ -32,17 +32,21 @@ import java.util.stream.Collectors;
 public class ProductsService {
     private final Logger logger = LoggerFactory.getLogger(ProductsService.class);
 
-    @Inject
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    private final JobLauncher jobLauncher;
+
+    private final Job job;
+
+    private final UploadsService uploadsService;
 
     @Inject
-    private JobLauncher jobLauncher;
-
-    @Inject
-    private Job job;
-
-    @Inject
-    private UploadsService uploadsService;
+    public ProductsService(ProductRepository productRepository, JobLauncher jobLauncher, Job job, UploadsService uploadsService) {
+        this.productRepository = productRepository;
+        this.jobLauncher = jobLauncher;
+        this.job = job;
+        this.uploadsService = uploadsService;
+    }
 
     public Optional<Product> findById(int id){
         return productRepository.findById(id);

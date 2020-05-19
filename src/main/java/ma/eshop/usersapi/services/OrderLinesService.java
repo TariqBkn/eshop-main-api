@@ -10,8 +10,12 @@ import java.util.List;
 @Service
 public class OrderLinesService {
 
+    private final OrderLinesRepository orderLinesRepository;
+
     @Inject
-    private OrderLinesRepository orderLinesRepository;
+    public OrderLinesService(OrderLinesRepository orderLinesRepository) {
+        this.orderLinesRepository = orderLinesRepository;
+    }
 
     public boolean existByProductId(int id){
         return orderLinesRepository.existsByProductId(id);
