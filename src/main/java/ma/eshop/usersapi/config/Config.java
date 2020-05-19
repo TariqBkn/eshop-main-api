@@ -9,28 +9,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
-//@EnableElasticsearchRepositories(basePackages = "ma.eshop.usersapi.repositories")
+@EnableSwagger2
 public class Config {
-
-//    @Value("${elasticsearch.cluster.name:elasticsearch}")
-//    private String clusterName;
-//    @Bean
-//    public Client client() throws UnknownHostException {
-//        Settings elasticsearchSettings = Settings.builder()
-//                .put("client.transport.sniff", true)
-//                .put("path.home", elasticsearchHome)
-//                .put("cluster.name", clusterName).build();
-//        TransportClient client = new PreBuiltTransportClient(elasticsearchSettings);
-//        client.addTransportAddress(new TransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
-//        return client;
-//    }
-//
-//    @Bean
-//    public ElasticsearchOperations elasticsearchTemplate() throws UnknownHostException {
-//        return new ElasticsearchTemplate(client());
-//    }
 
     @Bean
     JwtUtilService jwtUtilService(){
@@ -61,5 +48,14 @@ public class Config {
                         .addResourceLocations("classpath:/static/images/products/");
             }
         };
+    }
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
     }
 }

@@ -43,7 +43,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        // We don't need to worry about CSRF attacks because the browser is authenticating requests by looking at the authorization header
         httpSecurity
                     .csrf().disable()
                     .authorizeRequests()
@@ -54,7 +53,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                     .and() .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);// Sessions will not be created
-        // now we have to use the the jwtRequestFilter before UsernamePasswordAuthenticationFilter that processes authentication form submission
         httpSecurity
                     .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
