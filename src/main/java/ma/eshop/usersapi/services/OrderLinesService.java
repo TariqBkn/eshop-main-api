@@ -9,13 +9,10 @@ import java.util.List;
 
 @Service
 public class OrderLinesService {
-
-    private final OrderLinesRepository orderLinesRepository;
-
     @Inject
-    public OrderLinesService(OrderLinesRepository orderLinesRepository) {
-        this.orderLinesRepository = orderLinesRepository;
-    }
+    private OrderLinesRepository orderLinesRepository;
+
+
 
     public boolean existByProductId(int id){
         return orderLinesRepository.existsByProductId(id);

@@ -3,10 +3,7 @@ package ma.eshop.usersapi.controllers;
 import ma.eshop.usersapi.errorHandlers.ProductHasAtLeastMaxNumberOfImagesException;
 import ma.eshop.usersapi.models.Product;
 import ma.eshop.usersapi.models.SimilarProduct;
-import ma.eshop.usersapi.services.ImagesService;
-import ma.eshop.usersapi.services.ProductsService;
-import ma.eshop.usersapi.services.SimilarProductsService;
-import ma.eshop.usersapi.services.UploadsService;
+import ma.eshop.usersapi.services.*;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -26,21 +23,14 @@ import java.util.*;
 @RestController
 @RequestMapping("/products")
 public class ProductsController {
-    private final ProductsService productsService;
-
-    private final SimilarProductsService similarProductsService;
-
-    private final UploadsService uploadsService;
-
-    private final ImagesService imagesService;
-
     @Inject
-    public ProductsController(ProductsService productsService, SimilarProductsService similarProductsService, UploadsService uploadsService, ImagesService imagesService) {
-        this.productsService = productsService;
-        this.similarProductsService = similarProductsService;
-        this.uploadsService = uploadsService;
-        this.imagesService = imagesService;
-    }
+    private ProductsService productsService;
+    @Inject
+    private SimilarProductsService similarProductsService;
+    @Inject
+    private UploadsService uploadsService;
+    @Inject
+    private ImagesService imagesService;
 
     @GetMapping("/{id}")
     ResponseEntity<Product> findById(@PathVariable int id){
@@ -72,8 +62,8 @@ public class ProductsController {
         return ResponseEntity.ok(productsService.loadProductsFromCsvFileIntoDataBase());
     }
 
-    @GetMapping(value = "/images/{imageName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<ByteArrayResource> getImage(@PathVariable String imageName){
+    @GetMapping(value = "/images", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<ByteArrayResource> getImage(@RequestParam(name = "imageName") String imageName){
         return ResponseEntity.ok().body(imagesService.findByName(imageName));
     }
 

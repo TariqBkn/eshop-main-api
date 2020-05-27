@@ -21,14 +21,11 @@ import java.util.Optional;
 @Service
 public class UsersService {
     @Inject
-    UsersRepository usersRepository;
-
+    private UsersRepository usersRepository;
     @Inject
-    JwtUtilService jwtUtilService;
-
+    private JwtUtilService jwtUtilService;
     @Inject
     private AuthenticationManager authenticationManager;
-
     @Inject
     private MyUserDetailsService userDetailsService;
 
@@ -70,7 +67,7 @@ public class UsersService {
         Optional<User> existingUser = usersRepository.findById(user.getId());
         if(existingUser.isPresent()){
             User foundExistingUser = existingUser.get();
-
+            //TODO: Refactor
             foundExistingUser.setAddressCity(user.getAddressCity());
             foundExistingUser.setAddressNumber(user.getAddressNumber());
             foundExistingUser.setAddressStreetName(user.getAddressStreetName());

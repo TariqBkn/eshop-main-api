@@ -1,6 +1,5 @@
 package ma.eshop.usersapi.services;
 
-import ma.eshop.usersapi.filters.CorsFilter;
 import ma.eshop.usersapi.models.MyUserDetails;
 import ma.eshop.usersapi.models.User;
 import ma.eshop.usersapi.repositories.UsersRepository;
@@ -18,12 +17,9 @@ public class MyUserDetailsService implements UserDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyUserDetails.class);
 
-    private final UsersRepository usersRepository;
-
     @Inject
-    public MyUserDetailsService(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
-    }
+    private UsersRepository usersRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException{

@@ -18,16 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class SimilarProductsService {
-
-    private final ProductsService productsService;
+    @Inject
+    private ProductsService productsService;
 
     @Value("${productSimilarityCalculatorApi}")
     private String similarityCalculatorAPIUrl;
-
-    @Inject
-    public SimilarProductsService(ProductsService productsService) {
-        this.productsService = productsService;
-    }
 
     public List<SimilarProduct> getSimilarProductsOf(int productId) throws UnsupportedEncodingException {
 

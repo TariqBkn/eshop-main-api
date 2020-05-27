@@ -16,13 +16,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/orders")
 public class OrdersController {
-
-    private final OrdersService ordersService;
-
     @Inject
-    public OrdersController(OrdersService ordersService) {
-        this.ordersService = ordersService;
-    }
+    private OrdersService ordersService;
+
 
     @PatchMapping("/{orderId}/checkout")
     ResponseEntity Checkout(@PathVariable int orderId, @AuthenticationPrincipal User user){

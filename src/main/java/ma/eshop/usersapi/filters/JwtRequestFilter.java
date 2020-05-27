@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 
 public class JwtRequestFilter extends OncePerRequestFilter {
     private static final String JWT_NOT_STARTING_WITH_BEARER = "JWT Token does not begin with Bearer String";
@@ -32,6 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         // Get the Authorization header
         final String authorizationHeader = request.getHeader("Authorization");
         String jwt="";
@@ -51,7 +53,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 logger.warn(e.getMessage());
             }
         } else {
+            filterChain.doFilter(request, response);
             logger.warn(JWT_NOT_STARTING_WITH_BEARER);
+            return;
         }
 
         // Once we get the token, we validate it.

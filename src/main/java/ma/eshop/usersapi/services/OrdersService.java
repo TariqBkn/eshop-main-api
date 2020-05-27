@@ -17,19 +17,13 @@ import java.util.Optional;
 
 @Service
 public class OrdersService {
-
-    private final OrdersRepository ordersRepository;
-
-    private final OrderLinesService orderLinesService;
-
-    private final ProductsService productsService;
-
     @Inject
-    public OrdersService(OrdersRepository ordersRepository, OrderLinesService orderLinesService, ProductsService productsService) {
-        this.ordersRepository = ordersRepository;
-        this.orderLinesService = orderLinesService;
-        this.productsService = productsService;
-    }
+    private OrdersRepository ordersRepository;
+    @Inject
+    private OrderLinesService orderLinesService;
+    @Inject
+    private ProductsService productsService;
+
 
     public Order getUndoneOrderOfUser(int userId) {
         return ordersRepository.getUndoneOrderOfUser(userId);

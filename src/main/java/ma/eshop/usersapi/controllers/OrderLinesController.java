@@ -16,16 +16,11 @@ import javax.inject.Inject;
 @RestController
 @RequestMapping("/orderlines")
 public class OrderLinesController {
-
-    private final OrderLinesService orderLinesService;
-
-    private final OrdersService ordersService;
-
     @Inject
-    public OrderLinesController(OrderLinesService orderLinesService, OrdersService ordersService){
-        this.ordersService=ordersService;
-        this.orderLinesService=orderLinesService;
-    }
+    private OrderLinesService orderLinesService;
+    @Inject
+    private OrdersService ordersService;
+
 
     @PostMapping("")
     @Transactional
