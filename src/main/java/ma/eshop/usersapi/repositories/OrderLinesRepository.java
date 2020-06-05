@@ -18,6 +18,7 @@ public interface OrderLinesRepository extends JpaRepository<OrderLine,Integer> {
     @Transactional
     @Query("update OrderLine o SET o.quantity=?1 where o.product.id = ?2")
     void updateQuantityByProductId(int productId, int newQuantity);
+
     @Query("select count(o)=1 from OrderLine o where o.product.id = ?1")
     boolean existsByProductId(int id);
 
@@ -26,6 +27,7 @@ public interface OrderLinesRepository extends JpaRepository<OrderLine,Integer> {
 
     @Query("select o from OrderLine o where o.order.user.id = ?1")
     List<OrderLine> findAllOrderLinesOfUserWithId(int userId);
+
     @Query("select o from OrderLine o where o.order.id = ?1")
     List<OrderLine> findOrderLinesByOrderId(int orderId);
 }

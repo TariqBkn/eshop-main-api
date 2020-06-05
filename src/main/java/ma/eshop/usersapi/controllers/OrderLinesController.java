@@ -25,16 +25,25 @@ public class OrderLinesController {
     @PostMapping("")
     @Transactional
     ResponseEntity add(@AuthenticationPrincipal User connectedUser, @RequestBody OrderLine orderLine){
+        System.out.print("--------------------------- Product id "+orderLine.getProduct().getId()+"--------------------------");
         if(ordersService.userHasUndoneOrders(connectedUser.getId())){
+            System.out.print("-------------------------- Here in 1 ---------------------------");
             ordersService.makeSureThereIsOnlyOneUndoneOrder(connectedUser);
             try {
+                System.out.print("------------------------Quantity about to be added-----------------------------");
+
                 ordersService.addQuantityToExistingOrderLine(connectedUser, orderLine);
+                System.out.print("-------------------------Quantity added----------------------------");
+
             } catch (QuantityInStockExceededException e) {
+                System.out.print("------------------------In exception-----------------------------");
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
             }
         }else{
+            System.out.print("---------------------------IN else--------------------------");
             ordersService.saveOrderLineInANewOrder(connectedUser, orderLine);
         }
+        System.out.print("-----------------------DONE-----------------------------");
         return ResponseEntity.ok().build();
     }
 

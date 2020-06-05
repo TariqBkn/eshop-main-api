@@ -11,16 +11,16 @@ import javax.persistence.*;
 public class OrderLine {
     @Id
     @GeneratedValue
-        private int id;
-        @ManyToOne
-        private Product product;
-        @ManyToOne
-        private Order order;
+    private int id;
+    @ManyToOne
+    private Product product;
+    @ManyToOne
+    private Order order;
 
-        private int quantity;
-        private float cost;
+    private int quantity;
+    private float cost;
 
-    protected OrderLine(){
+    public OrderLine(){
 
     }
 

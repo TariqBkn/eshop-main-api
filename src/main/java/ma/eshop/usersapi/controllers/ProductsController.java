@@ -79,8 +79,8 @@ public class ProductsController {
         }
     }
 
-    @DeleteMapping("/{id}/images/{imageName}")
-    public ResponseEntity deleteImage(@PathVariable("id") int id, @PathVariable("imageName") String imageName){
+    @DeleteMapping("/{id}/images")
+    public ResponseEntity deleteImage(@PathVariable("id") int id, @RequestParam("imageName") String imageName){
         try {
             productsService.removeImageOfProduct(imageName, id);
             imagesService.deleteByName(imageName);

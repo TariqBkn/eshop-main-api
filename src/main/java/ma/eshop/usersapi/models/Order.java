@@ -27,7 +27,7 @@ public class Order {
     private boolean checkedOut=false;
 
     public Order(){
-        orderLines = new ArrayList<>();
+        if(orderLines==null) orderLines = new ArrayList<>();
     }
 
     public float getTotalCost(){
